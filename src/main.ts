@@ -4,14 +4,19 @@ import { ValidationPipe } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 
 async function bootstrap() {
-  dotenv.config();
-
   const app = await NestFactory.create(AppModule);
-  app.enableCors({ origin: '*' }); // ✅ Allow all origins (or restrict as needed)
+  
+  // Enable CORS for all origins (you can restrict this later)
+  app.enableCors({ 
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
+  
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   const port = process.env.PORT || 3000;
-  await app.listen(port);
-  console.log(`🚀 Server running on http://localhost:${port}`);
+  await app.listen(port, '0.0.0.0'); // ✅ Bind to all interfaces for cloud deployment
+  console.log(`🚀 Server running on port ${port}`);
 }
 bootstrap();
