@@ -8,6 +8,7 @@ import { RidersModule } from './riders/riders.module';
 import { DriversModule } from './drivers/drivers.module';
 import { RidesModule } from './rides/rides.module';
 import { GatewayModule } from './gateway/gateway.module';
+import { HealthModule } from './health/health.module';
 
 import { User } from './users/user.entity';
 import { Ride } from './rides/ride.entity';
@@ -17,14 +18,16 @@ import { Ride } from './rides/ride.entity';
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
   type: 'postgres',
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
+  // Support both individual env vars and DATABASE_URL for cloud deployment
+  url: process.env.DATABASE_URL,
+  host: process.env.DATABASE_URL ? undefined : process.env.DB_HOST,
+  port: process.env.DATABASE_URL ? undefined : Number(process.env.DB_PORT),
+  username: process.env.DATABASE_URL ? undefined : process.env.DB_USERNAME,
+  password: process.env.DATABASE_URL ? undefined : process.env.DB_PASSWORD,
+  database: process.env.DATABASE_URL ? undefined : process.env.DB_DATABASE,
   entities: [User, Ride],
   synchronize: true,
-  // dropSchema: true, // 👈 REMOVED - was deleting all data on startup!
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 }),
     AuthModule,
 UsersModule,
@@ -32,6 +35,7 @@ RidersModule,
 DriversModule,
 RidesModule,
 GatewayModule,
+HealthModule,
   ],
 })
 export class AppModule {}
