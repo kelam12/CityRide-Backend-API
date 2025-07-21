@@ -9,6 +9,7 @@ import { DriversModule } from './drivers/drivers.module';
 import { RidesModule } from './rides/rides.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { HealthModule } from './health/health.module';
+import { SeedModule } from './seeds/seed.module';
 
 import { User } from './users/user.entity';
 import { Ride } from './rides/ride.entity';
@@ -36,6 +37,7 @@ import { Ride } from './rides/ride.entity';
     RidesModule,
     GatewayModule,
     HealthModule,
+    SeedModule,
   ],
 })
 export class AppModule {}
